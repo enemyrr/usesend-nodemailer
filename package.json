@@ -1,0 +1,33 @@
+{
+    "name": "@enemyrr/usesend-nodemailer",
+    "version": "0.1.0",
+    "description": "Transport for Nodemailer to send mails using the Usesend API.",
+    "author": "Andreas Enemyrr <andreas@enemyr.com>",
+    "license": "MIT",
+    "main": "dist/main.js",
+    "module": "dist/main.mjs",
+    "types": "dist/main.d.ts",
+    "publishConfig": {
+        "access": "public"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/enemyrr/usesend-nodemailer.git"
+    },
+    "scripts": {
+        "build": "tsup",
+        "dev": "tsup --watch"
+    },
+    "peerDependencies": {
+        "nodemailer": "^7.0.9"
+    },
+    "devDependencies": {
+        "@types/nodemailer": "^6.4.17",
+        "tsup": "^8.4.0",
+        "typescript": "^5.7.3"
+    },
+    "dependencies": {
+        "dotenv": "^17.2.3",
+        "usesend-js": "^1.5.5"
+    }
+}
