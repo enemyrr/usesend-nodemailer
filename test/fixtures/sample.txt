@@ -1,0 +1,10 @@
+Hello from Usesend Nodemailer!
+
+This is a sample text file for testing email attachments.
+
+Features tested:
+- Text file attachments
+- File path reading
+- Base64 encoding
+
+Generated on: 2025-11-04

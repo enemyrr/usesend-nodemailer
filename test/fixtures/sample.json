@@ -1,0 +1,24 @@
+{
+  "name": "Usesend Nodemailer Test",
+  "description": "Sample JSON file for attachment testing",
+  "version": "1.0.0",
+  "features": [
+    "JSON file attachments",
+    "File path reading",
+    "Base64 encoding",
+    "Multiple file format support"
+  ],
+  "metadata": {
+    "purpose": "testing",
+    "date": "2025-11-04",
+    "fileType": "application/json"
+  },
+  "testData": {
+    "numbers": [1, 2, 3, 4, 5],
+    "boolean": true,
+    "nested": {
+      "key": "value",
+      "array": ["item1", "item2", "item3"]
+    }
+  }
+}

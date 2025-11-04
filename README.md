@@ -8,6 +8,13 @@
 - ✅ Automatic email validation with detailed error messages
 - ✅ Display name support (`"Name <email@example.com>"`)
 - ✅ Automatic text/HTML content handling
+- ✅ **Comprehensive attachment support** with automatic base64 encoding
+  - String, Buffer, and Stream content
+  - File paths (local filesystem)
+  - URLs (HTTP/HTTPS)
+  - Data URIs
+  - Pre-encoded base64 content
+  - Multiple attachments (up to 10 per email)
 - ✅ Custom API endpoint support
 - ✅ Enhanced error reporting with helpful hints
 - ✅ TypeScript support with full type definitions
@@ -140,20 +147,151 @@ await mailer.sendMail({
 
 ### Email with Attachments
 
+The transport supports comprehensive attachment handling with automatic base64 encoding. You can attach files using various methods:
+
+#### String Content
 ```typescript
 await mailer.sendMail({
   from: 'noreply@yourdomain.com',
   to: 'user@example.com',
-  subject: 'Document Attached',
-  html: '<p>Please find the document attached.</p>',
+  subject: 'Text File Attachment',
+  html: '<p>Please find the text file attached.</p>',
   attachments: [
     {
-      filename: 'document.pdf',
-      content: Buffer.from('...'), // or base64 string
+      filename: 'hello.txt',
+      content: 'Hello, world!',
     }
   ],
 });
 ```
+
+#### Buffer Content
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'PDF Document',
+  html: '<p>Document attached.</p>',
+  attachments: [
+    {
+      filename: 'document.pdf',
+      content: Buffer.from(pdfData),
+    }
+  ],
+});
+```
+
+#### File Path
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'File from Disk',
+  html: '<p>File attached from filesystem.</p>',
+  attachments: [
+    {
+      filename: 'report.pdf',
+      path: '/path/to/report.pdf',
+    }
+  ],
+});
+```
+
+#### URL (HTTP/HTTPS)
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'File from URL',
+  html: '<p>Image attached from URL.</p>',
+  attachments: [
+    {
+      filename: 'logo.png',
+      path: 'https://example.com/logo.png',
+    }
+  ],
+});
+```
+
+#### Data URI
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'Data URI Attachment',
+  html: '<p>Inline data attached.</p>',
+  attachments: [
+    {
+      filename: 'inline.txt',
+      path: 'data:text/plain;base64,SGVsbG8gV29ybGQh',
+    }
+  ],
+});
+```
+
+#### Stream Content
+```typescript
+import { createReadStream } from 'fs';
+
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'Large File Stream',
+  html: '<p>Large file attached via stream.</p>',
+  attachments: [
+    {
+      filename: 'large-file.zip',
+      content: createReadStream('/path/to/large-file.zip'),
+    }
+  ],
+});
+```
+
+#### Pre-encoded Base64
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'Base64 Encoded',
+  html: '<p>Pre-encoded content.</p>',
+  attachments: [
+    {
+      filename: 'encoded.pdf',
+      content: 'JVBERi0xLjQK...', // base64 encoded content
+      encoding: 'base64',
+    }
+  ],
+});
+```
+
+#### Multiple Attachments
+```typescript
+await mailer.sendMail({
+  from: 'noreply@yourdomain.com',
+  to: 'user@example.com',
+  subject: 'Multiple Files',
+  html: '<p>Multiple files attached.</p>',
+  attachments: [
+    {
+      filename: 'document.pdf',
+      path: '/path/to/document.pdf',
+    },
+    {
+      filename: 'spreadsheet.xlsx',
+      content: Buffer.from(xlsxData),
+    },
+    {
+      filename: 'image.png',
+      path: 'https://example.com/image.png',
+    }
+  ],
+});
+```
+
+**Attachment Limitations:**
+- Maximum 10 attachments per email (Usesend API limit)
+- All content is automatically converted to base64 format
+- File size limits depend on your Usesend account plan
 
 ## Validation Features
 

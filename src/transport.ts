@@ -4,6 +4,7 @@ import { UsesendTransporterOptions } from "./types/transport";
 import MailMessage from "nodemailer/lib/mailer/mail-message";
 import { UseSend } from "usesend-js";
 import { Address } from "nodemailer/lib/mailer";
+import { processAttachment } from "./utils/attachments";
 
 type NodeMailerAddress = string | Address | Array<string | Address> | undefined;
 
@@ -111,10 +112,19 @@ export class UsesendTransport implements Transport<SentMessageInfo> {
 
         // Add attachments if present
         if (mail.data.attachments && mail.data.attachments.length > 0) {
-            emailPayload.attachments = mail.data.attachments.map((attachment) => ({
-                filename: attachment.filename?.toString() ?? '',
-                content: attachment.content?.toString() ?? '',
-            }));
+            // Validate attachment count (Usesend API limit)
+            if (mail.data.attachments.length > 10) {
+                return callback(new Error('Maximum 10 attachments allowed per email. Please reduce the number of attachments.'), null);
+            }
+
+            // Process all attachments (convert to base64, handle various input formats)
+            try {
+                emailPayload.attachments = await Promise.all(
+                    mail.data.attachments.map(attachment => processAttachment(attachment))
+                );
+            } catch (attachmentError) {
+                return callback(new Error(`Attachment processing failed: ${attachmentError instanceof Error ? attachmentError.message : String(attachmentError)}`), null);
+            }
         }
 
         this.usesend.emails.send(emailPayload).then(async (response) => {
