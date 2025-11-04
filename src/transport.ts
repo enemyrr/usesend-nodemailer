@@ -33,8 +33,8 @@ export class UsesendTransport implements Transport<SentMessageInfo> {
             return callback(new Error('Missing required field "from". Please specify a sender email address.'), null);
         }
 
-        if (!mail.data.to) {
-            return callback(new Error('Missing required field "to". Please specify at least one recipient email address.'), null);
+        if (!mail.data.to && !mail.data.cc && !mail.data.bcc) {
+            return callback(new Error('At least one recipient must be specified (to, cc, or bcc). Please specify at least one recipient email address.'), null);
         }
 
         if (!mail.data.subject) {
@@ -46,8 +46,10 @@ export class UsesendTransport implements Transport<SentMessageInfo> {
             const fromEmail = typeof mail.data.from === 'string' ? mail.data.from : (mail.data.from as Address).address;
             this.validateEmail(fromEmail, 'from');
 
-            const toAddresses = this.toUsesendAddresses(mail.data.to);
-            toAddresses.forEach(email => this.validateEmail(email, 'to'));
+            if (mail.data.to) {
+                const toAddresses = this.toUsesendAddresses(mail.data.to);
+                toAddresses.forEach(email => this.validateEmail(email, 'to'));
+            }
 
             if (mail.data.replyTo) {
                 const replyToAddresses = this.toUsesendAddresses(mail.data.replyTo);
@@ -70,11 +72,13 @@ export class UsesendTransport implements Transport<SentMessageInfo> {
         // Prepare email payload - only include non-empty fields
         const emailPayload: any = {
             from: mail.data.from as string,
-            to: this.toUsesendAddresses(mail.data.to),
             subject: mail.data.subject ?? '',
         };
 
         // Only add optional fields if they have values
+        const to = this.toUsesendAddresses(mail.data.to);
+        if (to.length > 0) emailPayload.to = to;
+
         const replyTo = this.toUsesendAddresses(mail.data.replyTo);
         if (replyTo.length > 0) emailPayload.replyTo = replyTo;
 
