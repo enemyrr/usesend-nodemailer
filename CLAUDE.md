@@ -50,6 +50,6 @@ Runs tsup in watch mode for development
 
 ## Dependencies
 
-- **Peer dependency**: nodemailer ^6.10.0 (expected to be installed by consumer)
-- **Runtime dependency**: usesend ^1.3.0 (the official Usesend SDK)
+- **Peer dependency**: nodemailer ^8.0.0 (expected to be installed by consumer)
+- **Runtime dependency**: usesend-js ^1.5.5 (the official Usesend SDK)
 - Uses package.json version for transport version reporting
